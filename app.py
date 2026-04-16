@@ -14,6 +14,7 @@ mapping = {
     },
 }
 
+
 @app.route('/retell-webhook', methods=['POST'])
 def webhook():
     data = request.get_json()
@@ -22,29 +23,22 @@ def webhook():
     biz = mapping.get(caller)
     
     if biz:
-        prompt = f"""You are a professional after-hours AI dispatcher for {biz['business']}, a trusted pest control company serving {biz['city']} and surrounding areas.
-
-{biz['opening']}
-
-Speak calmly, confidently, and helpfully. Use natural conversation.
-
-Core rules:
-- Always greet immediately: "Thanks for calling {biz['business']}. We're closed right now, but I can help you right away."
-- Ask if this is an emergency (rodents, termites, bed bugs, wasps, etc.).
-- Handle emergency and routine calls properly.
-- At the end, briefly mention: "By the way, this is exactly how our AI voice agent works for pest control companies 24/7."
-
-Be empathetic and sound human."""
+        return jsonify({
+            "response_type": "config",
+            "prompt": None,                    # Let the base agent prompt handle it
+            "dynamic_variables": {
+                "business_name": biz['business'],
+                "city": biz['city']
+            }
+        })
     else:
-        prompt = """You are a demo AI dispatcher for pest control companies in the Houston area. Ask the caller their company name, then demonstrate how you handle emergency vs routine calls professionally. At the end, explain briefly that this is a live demo of a 24/7 AI voice agent for pest control businesses."""
+        # Generic fallback
+        return jsonify({
+            "response_type": "config",
+            "prompt": """You are a demo AI dispatcher for pest control companies in the Houston area...""",
+            "dynamic_variables": {}
+        })
 
-    return jsonify({
-        "response_type": "config",
-        "prompt": prompt
-    })
-
-
-@app.route('/')
 def home():
     return "Pest Control Webhook is running ✅"
 
