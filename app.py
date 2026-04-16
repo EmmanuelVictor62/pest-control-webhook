@@ -8,7 +8,7 @@ app = Flask(__name__)
 # === YOUR LEAD MAPPING (add prospects here later) ===
 mapping = {
     # Example:
-    "+17622247961": {"Business Name": "Zyna Pest Control", "prospect": "Emmanuel Victor"},
+    "+17622247961": {"business_name": "Zyna Pest Control", "city": "Dallas", "opening": "I called your office a little while ago and reached voicemail."},
 }
 
 @app.route('/retell-webhook', methods=['POST'])
