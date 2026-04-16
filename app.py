@@ -5,10 +5,10 @@ import requests
 
 app = Flask(__name__)
 
-# === YOUR MAPPING GOES HERE (add leads later) ===
+# === YOUR LEAD MAPPING (add prospects here later) ===
 mapping = {
-    # Example (add your own +1 numbers later):
-    # "+17622247961": {"business": "Test Pest Control", "city": "Houston", "opening": "I called your office a little while ago and reached voicemail."},
+    # Example:
+    "+17622247961": {"Business Name": "Zyna Pest Control", "prospect": "Emmanuel Victor"},
 }
 
 @app.route('/retell-webhook', methods=['POST'])
@@ -32,14 +32,23 @@ Follow the core behavior exactly as defined in the base agent prompt. Be helpful
         "prompt": prompt
     })
 
-# === KEEP-ALIVE (prevents Render spin-down) ===
+
+# === Simple health check route (fixes 404 in browser) ===
+@app.route('/')
+def home():
+    return "Pest Control Webhook is running ✅"
+
+
+# === Keep-alive to prevent Render from spinning down ===
 def keep_alive():
     while True:
         try:
-            requests.get("https://YOUR-APP.onrender.com/retell-webhook", timeout=10)  # change after deploy
+            # Ping the health check route
+            requests.get("https://pest-control-webhook.onrender.com/", timeout=10)
         except:
             pass
         time.sleep(600)  # every 10 minutes
+
 
 if __name__ == '__main__':
     # Start keep-alive in background
